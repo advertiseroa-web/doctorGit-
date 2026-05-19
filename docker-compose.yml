@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # The Master Orchestrator (Antigravity Layer & Neural MoE)
+  antigravity-core:
+    image: node:20-alpine
+    container_name: neural_forensic_os
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - WIKI_PATH=/app/forensic_wiki
+      # Connects to the isolated sandbox environment
+      - DOCKER_HOST=tcp://sandbox-machine:2375 
+    volumes:
+      - .:/app
+      - wiki-vault:/app/forensic_wiki
+    depends_on:
+      - sandbox-machine
+    restart: unless-stopped
+
+  # The Execution Plane (Isolated Sandbox for Special Agents)
+  sandbox-machine:
+    image: docker:dind
+    container_name: antigravity_sandbox
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    command: ["--experimental"]
+    volumes:
+      - sandbox-temp-data:/var/lib/docker
+    restart: unless-stopped
+
+volumes:
+  # The Long-term Memory (Living Knowledge Graph)
+  wiki-vault:
+    name: dynamic_wiki_vault
+  
+  # Temporary storage for forensic analysis (Wiped on Emergency Brake)
+  sandbox-temp-data:
+    name: forensic_sandbox_data

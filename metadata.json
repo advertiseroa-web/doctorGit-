@@ -1,0 +1,11 @@
+{
+  "name": "Remix: AI Canvas Workspace",
+  "description": "A split-pane IDE and node-based canvas for AI workflow builder with a simulated Tauri native backend.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
